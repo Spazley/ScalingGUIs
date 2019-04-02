@@ -1,0 +1,17 @@
+[
+{
+  "modid": "scalingguis",
+  "name": "ScalingGUIs",
+  "description": "ScalingGUIs aims to decouple all GUI scales, HUD scale, and tooltip scale such that any GUI can be scaled to the player's liking.",
+  "version": "1.12.2-0.0.1.0",
+  "mcversion": "1.12.2",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Spazley"],
+  "credits": "unascribed for inspiration through Vise.",
+  "logoFile": "",
+  "screenshots": [],
+  "useDependencyInformation": true,
+  "dependencies": []
+}
+]
