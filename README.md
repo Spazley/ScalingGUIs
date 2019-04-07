@@ -27,3 +27,4 @@ ScalingGUIs allows logging of GUI class names in the Minecraft log and persisten
 * Set up the wiki to better describe operation and functionality
 * Add SelectValue entry to blacklist config category as in the Individual and Group categories
 * Add system to recouple GUI scales.  Will allow for a single slider to scale multiple differently-named GUIs
+* Update select-value entries to sort from most recent GUI to least. Add config to sort by natural order
