@@ -1,0 +1,11 @@
+Changelog
+
+1.12.2-0.0.2.0
+
++Added blacklist to handle screens consisting of multiple GUIs (specifically Tinkers Construct)
+++Added default blacklist values to handle known cases (based on mods present)
+++Added config to update blacklist with default values (default true)
++Added config to log GUI class names to chat (default false)
++Rearranged settings to be a little cleaner due to additon of blacklist
+++General settings now have their own category screen
++Changed tooltip scaling to lowest event priority to prevent firing before More Overlays draws its JEI item search overlay

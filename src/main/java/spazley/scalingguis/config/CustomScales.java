@@ -2,11 +2,9 @@ package spazley.scalingguis.config;
 
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.Loader;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class CustomScales {
     public int guiScale = Minecraft.getMinecraft().gameSettings.guiScale;
@@ -15,6 +13,7 @@ public class CustomScales {
     public JsonObject customIndividualGUIScales = new JsonObject();
     public JsonObject customGroupGUIScales = new JsonObject();
     public SortedSet<String> loggedGUIClassNames = new TreeSet<>();
+    public SortedSet<String> blacklistGUIClassNames = new TreeSet<>();// blacklistDefault();
 
 
     public void checkCustomEntries()
@@ -36,6 +35,21 @@ public class CustomScales {
             }
         }
     }
+
+/*    public SortedSet<String> blacklistDefault()
+    {
+        SortedSet<String> blacklist = new TreeSet<>();
+
+        Map<String, String[]> map = DefaultBlacklist.getDefaultBlacklist();
+
+        for (String key : map.keySet()) {
+            if (Loader.isModLoaded(key)) {
+                blacklist.addAll(Arrays.asList(map.get(key)));
+            }
+        }
+
+        return blacklist;
+    }*/
 
 /*
     public List<IConfigElement> getMainsList()

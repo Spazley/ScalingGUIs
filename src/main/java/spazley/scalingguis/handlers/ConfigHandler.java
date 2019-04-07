@@ -1,5 +1,7 @@
 package spazley.scalingguis.handlers;
 
+import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.fml.common.Loader;
 import spazley.scalingguis.ScalingGUIs;
 import spazley.scalingguis.config.CustomScales;
 import spazley.scalingguis.config.JsonHelper;
@@ -40,9 +42,12 @@ public class ConfigHandler
 
     private static List<String> individualGuiClassNames;
     private static List<String> groupGuiClassNames;
+    private static List<String> blacklistGuiClassNames;
 
     public static boolean logGuiClassNames = false;
     public static boolean persistentLog = true;
+    public static boolean addDefaultBlacklist = true;
+    public static boolean logGuiClassNamesChat = false;
 
     //public static String configPath = "config/ScalingGUIs/ScalingGUIs.cfg";
     public static String scaleOverridesPath = "config/ScalingGUIs/ScalingGUIsCustomScales.json";
@@ -62,6 +67,8 @@ public class ConfigHandler
 
         logGuiClassNames = config.getBoolean("Log GUI Class Names", Configuration.CATEGORY_GENERAL, false, "Enable logging of GUI class names in the Minecraft log.");
         persistentLog = config.getBoolean("Persistent Log", Configuration.CATEGORY_GENERAL, false, "Maintain persistent log of GUI class names.");
+        addDefaultBlacklist = config.getBoolean("Add Default Blacklist", Configuration.CATEGORY_GENERAL, true, "Update the blacklist with the current default blacklist. Will not remove custom blacklist entries.");
+        logGuiClassNamesChat = config.getBoolean("Log GUI Class Names To Chat", Configuration.CATEGORY_GENERAL, false, "Display opened GUI class names in the ingame chat.");
         //Collections.addAll(loggedGuiClassNames, config.getStringList("Logged GUI Class Names", "log", new String[0], "Persistent log of GUI class names. Updated on config save."));
 
         config.save();
@@ -70,18 +77,27 @@ public class ConfigHandler
         File fileScaleOverrides = new File(scaleOverridesPath);
         customScales = JsonHelper.scalesFromJsonFile(fileScaleOverrides);
         customScales.checkCustomEntries();
+        if (addDefaultBlacklist)
+        {
+            Map<String, List<String>> map = JsonHelper.defaultBlacklistsFromJsonFile();
+
+            for (String key : map.keySet()) {
+                if (Loader.isModLoaded(key)) {
+                    customScales.blacklistGUIClassNames.addAll(map.get(key));
+                }
+            }
+        }
         JsonHelper.scalesToJsonFile(fileScaleOverrides, customScales);
 
         individualGuiClassNames = JsonHelper.getKeyList(customScales.customIndividualGUIScales);
         groupGuiClassNames = JsonHelper.getKeyList(customScales.customGroupGUIScales);
+        blacklistGuiClassNames = new ArrayList<>(customScales.blacklistGUIClassNames);
     }
 
     public static void saveConfigs()
     {
         ScalingGUIs.logger.info("Saving configs");
         File fileScaleOverrides = new File(scaleOverridesPath);
-
-        //config.getStringList("Logged GUI Class Names", "log", loggedGuiClassNames.toArray(new String[loggedGuiClassNames.size()]), "Persistent log of GUI class names. Updated on config save.");
 
         Minecraft.getMinecraft().gameSettings.guiScale = customScales.guiScale;
         Minecraft.getMinecraft().gameSettings.saveOptions();
@@ -111,6 +127,11 @@ public class ConfigHandler
         }
 
         return "NONE";
+    }
+
+    public static boolean inBlacklist(String className)
+    {
+        return blacklistGuiClassNames.contains(className);
     }
 
     public static int getIndividualScale(String className)
@@ -224,12 +245,24 @@ public class ConfigHandler
         return list;
     }
 
-    public static Map<Object, String> getLoggedClassNames()
+    public static List<IConfigElement> getBlacklistElementsList()
+    {
+        List<IConfigElement> list = new ArrayList<>();
+
+        Property prop = new Property("blacklist", blacklistGuiClassNames.toArray(new String[0]), Property.Type.STRING, "scalingguis.config.blacklist.title");
+
+        list.add(new ConfigElement(prop));
+
+        return list;
+    }
+
+    public static Map<Object, String> getUnusedLoggedClassNames()
     {
         List<String> list = new ArrayList<>(customScales.loggedGUIClassNames);
 
         list.removeAll(individualGuiClassNames);
         list.removeAll(groupGuiClassNames);
+        list.removeAll(blacklistGuiClassNames);
 
         Map<Object, String> map = new TreeMap<>();
 

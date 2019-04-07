@@ -1,6 +1,7 @@
 package spazley.scalingguis.gui.guiconfig;
 
 import com.google.gson.JsonObject;
+import scala.actors.threadpool.Arrays;
 import spazley.scalingguis.ScalingGUIs;
 import spazley.scalingguis.config.CustomScales;
 import spazley.scalingguis.handlers.ConfigHandler;
@@ -16,6 +17,7 @@ import org.lwjgl.input.Keyboard;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 public class GuiConfigSG extends GuiConfig {
 
@@ -27,17 +29,23 @@ public class GuiConfigSG extends GuiConfig {
     public static final String MAIN_ID = "ScalingGUIsConfigMain";
     protected static final String INDIVIDUAL_ID = "ScalingGUIsConfigIndividual";
     protected static final String GROUP_ID = "ScalingGUIsConfigGroup";
+    protected static final String BLACKLIST_ID = "ScalingGUIsConfigBlacklist";
+    protected static final String GENERAL_ID = "ScalingGUIsConfigGeneral";
 
     //Element IDs
     protected static final String NEW_INDIVIDUAL_ID = "AddNewIndividual";
     protected static final String NEW_GROUP_ID = "AddNewGroup";
+    protected static final String NEW_BLACKLIST_ID = "AddNewBlacklist";
 
     //Title Lang
     private static final String MAIN_TITLE = "scalingguis.config.main.title";
     private static final String INDIVIDUAL_TITLE = "scalingguis.config.individual.title";
     private static final String GROUP_TITLE = "scalingguis.config.group.title";
+    private static final String BLACKLIST_TITLE = "scalingguis.config.blacklist.title";
+    private static final String GENERAL_TITLE = "scalingguis.config.general.title";
     private static final String NEW_INDIVIDUAL_TITLE = "scalingguis.config.individual.add.title";
-    private static final String NEW_GROUP_TITLE = "scaling.config.group.add.title";
+    private static final String NEW_GROUP_TITLE = "scalingguis.config.group.add.title";
+    private static final String NEW_BLACKLIST_TITLE = "scalingguis.config.blacklist.add.title";
 
 
     public GuiConfigSG(GuiScreen parentScreen, String configID) {
@@ -49,10 +57,12 @@ public class GuiConfigSG extends GuiConfig {
         List<IConfigElement> mainElements = new ArrayList<>();
         List<IConfigElement> individualElements = new ArrayList<>();
         List<IConfigElement> groupElements = new ArrayList<>();
+        List<IConfigElement> blacklistElements = new ArrayList<>();
+        List<IConfigElement> generalElements = new ArrayList<>();
 
         //Main Config Menu Elements
         mainElements.addAll(ConfigHandler.getMainsList());
-        mainElements.addAll((new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL))).getChildElements());
+        //mainElements.addAll((new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL))).getChildElements());
 
         //Individual Config Menu Elements
         individualElements.addAll(ConfigHandler.getIndividualsList());
@@ -62,9 +72,18 @@ public class GuiConfigSG extends GuiConfig {
         groupElements.addAll(ConfigHandler.getGroupsList());
         groupElements.add(new DummyConfigElement.DummyCategoryElement(NEW_GROUP_ID, NEW_GROUP_TITLE, NewGroupScale.class));
 
+        //Blacklist Config Menu Elements
+        blacklistElements.addAll(ConfigHandler.getBlacklistElementsList());
+
+        //General Config Menu Elements
+        generalElements.addAll((new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL))).getChildElements());
+
+
         //Main Config Menu Category Elements
         mainElements.add(new DummyConfigElement.DummyCategoryElement(INDIVIDUAL_ID, INDIVIDUAL_TITLE, individualElements));
         mainElements.add(new DummyConfigElement.DummyCategoryElement(GROUP_ID, GROUP_TITLE, groupElements));
+        mainElements.add(new DummyConfigElement.DummyCategoryElement(BLACKLIST_ID, BLACKLIST_TITLE, blacklistElements));
+        mainElements.add(new DummyConfigElement.DummyCategoryElement(GENERAL_ID, GENERAL_TITLE, generalElements));
 
         return mainElements;
     }
@@ -138,6 +157,9 @@ public class GuiConfigSG extends GuiConfig {
                 case GROUP_ID:
                     saveGroups(ice);
                     break;
+                case BLACKLIST_ID:
+                    saveBlacklist(ice);
+                    break;
                 default:
                     break;
             }
@@ -148,7 +170,8 @@ public class GuiConfigSG extends GuiConfig {
         ConfigHandler.initConfigs();
     }
 
-    private void saveIndividuals(IConfigElement iConfigElementIn) {
+    private void saveIndividuals(IConfigElement iConfigElementIn)
+    {
         JsonObject individuals = new JsonObject();
 
         for (IConfigElement ice : iConfigElementIn.getChildElements()) {
@@ -168,7 +191,8 @@ public class GuiConfigSG extends GuiConfig {
         customScales.customIndividualGUIScales = individuals;
     }
 
-    private void saveGroups(IConfigElement iConfigElementIn) {
+    private void saveGroups(IConfigElement iConfigElementIn)
+    {
         JsonObject groups = new JsonObject();
 
         for (IConfigElement ice : iConfigElementIn.getChildElements()) {
@@ -186,6 +210,16 @@ public class GuiConfigSG extends GuiConfig {
         }
 
         customScales.customGroupGUIScales = groups;
+    }
+
+    private void saveBlacklist(IConfigElement iConfigElementIn)
+    {
+        for (IConfigElement ice : iConfigElementIn.getChildElements()) {
+            //((ConfigElement)ice).;
+            if ("blacklist".equals(ice.getName())) {
+               customScales.blacklistGUIClassNames = new TreeSet<String>(Arrays.asList(ice.getList()));
+            }
+        }
     }
 
 
@@ -344,7 +378,7 @@ public class GuiConfigSG extends GuiConfig {
         }
 
         private static Map<Object, String> getKnownGuiClassNames() {
-            return ConfigHandler.getLoggedClassNames();
+            return ConfigHandler.getUnusedLoggedClassNames();
         }
 
         @Override

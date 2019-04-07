@@ -1,5 +1,6 @@
 package spazley.scalingguis;
 
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import spazley.scalingguis.handlers.ClientEventHandler;
 import spazley.scalingguis.handlers.ConfigHandler;
 import net.minecraftforge.common.config.Configuration;
@@ -16,12 +17,13 @@ public class ScalingGUIs
 {
     public static final String MODID = "scalingguis";
     public static final String NAME = "ScalingGUIs";
-    public static final String VERSION = "1.12.2-0.0.0.1";
+    public static final String VERSION = "1.12.2-0.0.2.0";
 
     public static Logger logger;
 
 
-    @EventHandler public void preInit(FMLPreInitializationEvent event)
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
         if (FMLClientHandler.instance().hasOptifine()) {
@@ -33,8 +35,14 @@ public class ScalingGUIs
 
             File configFile = new File("config/ScalingGUIs/ScalingGUIs.cfg");
             ConfigHandler.config = new Configuration(configFile, true);
-            ConfigHandler.initConfigs();
+            //ConfigHandler.initConfigs();
         }
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent e)
+    {
+        ConfigHandler.initConfigs();
     }
 
 

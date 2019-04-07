@@ -5,6 +5,8 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
@@ -40,9 +42,16 @@ public class ClientEventHandler {
                 if ((name.equals(lastGui) && Minecraft.getMinecraft().gameSettings.guiScale == lastScale)) {
                     return; //
                 }
+                if (ConfigHandler.inBlacklist(name)) {
+                    return;
+                }
 
                 if (ConfigHandler.logGuiClassNames && !name.equals(lastGui)) {
                     ScalingGUIs.logger.info("Opened GUI: " + name);
+                }
+                if (ConfigHandler.logGuiClassNamesChat && !name.equals(lastGui) && Minecraft.getMinecraft().world != null)
+                {
+                    Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Opened GUI: " + name));
                 }
                 if (ConfigHandler.persistentLog && !name.equals(lastGui)) {
                     ConfigHandler.logClassName(name);
@@ -129,8 +138,12 @@ public class ClientEventHandler {
 
 
     //Copied from Vise and modified to fit the context of ScalingGUIs. See license.
-    @SubscribeEvent(priority=EventPriority.HIGHEST)
+    //Set to LOWEST to ensure the scale is set after More Overlays renders its itemsearch overlay.
+    //May need to play around with priority if other mods render things with the RenderTooltipEvent.Pre event
+    @SubscribeEvent(priority=EventPriority.LOWEST)
     public void onPreRenderTooltip(RenderTooltipEvent.Pre e) {
+        e.getListenerList();
+
         int newScale = clampScale(ConfigHandler.getTooltipScale());
         //ScalingGUIs.logger.info("Setting TOOLTIP scale to " + newScale + ".");
         GlStateManager.pushMatrix();
@@ -145,9 +158,13 @@ public class ClientEventHandler {
     }
 
     //Copied from Vise. See license.
-    @SubscribeEvent(priority=EventPriority.LOWEST)
+    @SubscribeEvent(priority=EventPriority.HIGHEST)
     public void onPostRenderTooltip(RenderTooltipEvent.PostText e) {
         GlStateManager.popMatrix();
+        if (Minecraft.getMinecraft().currentScreen != null && "mezz.jei.gui.recipes.RecipesGui".equals(Minecraft.getMinecraft().currentScreen.getClass().getName())) {
+            GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+            ScalingGUIs.logger.info(currentScreen.getClass().getName());
+        }
     }
 
     //Copied from Vise. See license.
@@ -198,6 +215,18 @@ public class ClientEventHandler {
                     }
                     i++;
                 }
+        }
+    }
+
+
+    //Temp testing method
+    @SubscribeEvent
+    public void onPreDrawScreen(GuiScreenEvent.DrawScreenEvent.Pre e)
+    {
+        if ("slimeknights.tconstruct.smeltery.client.module.GuiSmelterySideInventory".equals(e.getGui().getClass().getName()))
+        {
+            ScalingGUIs.logger.info("Opened smeltery side inventory.");
+            e.setCanceled(true);
         }
     }
 }

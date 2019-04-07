@@ -3,6 +3,7 @@ package spazley.scalingguis.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import net.minecraft.util.ResourceLocation;
 import spazley.scalingguis.ScalingGUIs;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.io.FilenameUtils;
@@ -29,7 +30,7 @@ public class JsonHelper
 
             return scales;
         } catch(Exception e) {
-            ScalingGUIs.logger.error("Failed to load json file. Backing up the current file and creating a new one.", e);
+            ScalingGUIs.logger.error("Failed to load json assets.scalingguis.file. Backing up the current assets.scalingguis.file and creating a new one.", e);
             backupJson(file);
 
             return new CustomScales();
@@ -46,7 +47,7 @@ public class JsonHelper
                 file.createNewFile();
             }
         } catch(Exception e) {
-            ScalingGUIs.logger.error("An error occurred while saving scales to json file.", e);
+            ScalingGUIs.logger.error("An error occurred while saving scales to json assets.scalingguis.file.", e);
             return;
         }
 
@@ -54,7 +55,7 @@ public class JsonHelper
             GSON.toJson(scales, osw);
             osw.flush();
         } catch(Exception e) {
-            ScalingGUIs.logger.error("An error occured while saving scales to json file.", e);
+            ScalingGUIs.logger.error("An error occured while saving scales to json assets.scalingguis.file.", e);
         }
     }
 
@@ -86,7 +87,7 @@ public class JsonHelper
             try {
                 Class temp = Class.forName(s);
             } catch(Exception e) {
-                ScalingGUIs.logger.error("Unknown class '" + s + "'. Removing from check list. Will be left in json file.", e);
+                ScalingGUIs.logger.error("Unknown class '" + s + "'. Removing from check list. Will be left in json assets.scalingguis.file.", e);
                 keyList.remove(s);
             }
         }
@@ -118,6 +119,23 @@ public class JsonHelper
         return "NONE";
     }
 
+    public static Map<String, List<String>> defaultBlacklistsFromJsonFile()
+    {
+        ResourceLocation loc = new ResourceLocation(ScalingGUIs.MODID, "default_blacklist.json");
+
+        try {
+            InputStream in = Minecraft.getMinecraft().getResourceManager().getResource(loc).getInputStream();
+            InputStreamReader isr = new InputStreamReader(in, StandardCharsets.UTF_8);
+            Map<String, List<String>> map = GSON.fromJson(isr, Map.class);
+            return map;
+        } catch(Exception e) {
+            ScalingGUIs.logger.error("Failed to load default blacklist.", e);
+        }
+
+        return new HashMap<>();
+        //return array;
+    }
+
     private static void copyFile(File source, File dest) throws IOException {
         InputStream is = null;
         OutputStream os = null;
@@ -142,8 +160,7 @@ public class JsonHelper
         try {
             copyFile(source, backup);
         } catch(Exception except2) {
-            ScalingGUIs.logger.error("Failed to backup json file.", except2);
+            ScalingGUIs.logger.error("Failed to backup json assets.scalingguis.file.", except2);
         }
     }
-
 }

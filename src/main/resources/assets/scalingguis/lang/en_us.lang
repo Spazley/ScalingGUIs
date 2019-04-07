@@ -2,6 +2,8 @@
 scalingguis.config.main.title=ScalingGUIs Config
 scalingguis.config.individual.title=Custom Individual GUI Scales
 scalingguis.config.group.title=Custom Group GUI Scales
+scalingguis.config.blacklist.title=GUI Class Blacklist
+scalingguis.config.general.title=General Settings
 scalingguis.config.individual.add.title=New Individual Entry
 scalingguis.config.group.add.title=New Group Entry
 
@@ -43,6 +45,8 @@ scalingguis.config.group.add.classname=New Group GUI Class Name
 scalingguis.config.group.add.displayname=New Group GUI Display Name
 scalingguis.config.group.remove=Remove Group GUI Entry
 
+# Config Entry Names ----- Blacklist
+
 
 # Config Entry Tooltips ----- Main
 scalingguis.config.main.guiscale.tooltip=Minecraft's main GUI scale.
@@ -67,6 +71,12 @@ scalingguis.config.group.add.title.tooltip=New Group Entry
 scalingguis.config.group.add.classname.tooltip=Class name for the new GUI entry.
 scalingguis.config.group.add.displayname.tooltip=Custom display name for the new GUI entry.
 scalingguis.config.group.remove.tooltip=Remove Group Entry
+
+# Config Entry Tooltips ----- Blacklist
+scalingguis.config.blacklist.title.tooltip=GUI class names blacklisted from scale settings.  Default values ensure screens consisting of multiple GUIs scale to the initial GUI's scale.
+
+# Config Entry Tooltips ----- General
+scalingguis.config.general.title.tooltip=General ScalingGUIs settings.
 
 
 
