@@ -188,7 +188,7 @@ public class GuiConfigSG extends GuiConfig {
             }
         }
 
-        customScales.customIndividualGUIScales = individuals;
+        customScales.customIndividualGuiScales = individuals;
     }
 
     private void saveGroups(IConfigElement iConfigElementIn)
@@ -209,7 +209,7 @@ public class GuiConfigSG extends GuiConfig {
             }
         }
 
-        customScales.customGroupGUIScales = groups;
+        customScales.customGroupGuiScales = groups;
     }
 
     private void saveBlacklist(IConfigElement iConfigElementIn)
@@ -217,7 +217,7 @@ public class GuiConfigSG extends GuiConfig {
         for (IConfigElement ice : iConfigElementIn.getChildElements()) {
             //((ConfigElement)ice).;
             if ("blacklist".equals(ice.getName())) {
-               customScales.blacklistGUIClassNames = new TreeSet<String>(Arrays.asList(ice.getList()));
+               customScales.blacklistGuiClassNames = new TreeSet<String>(Arrays.asList(ice.getList()));
             }
         }
     }
@@ -395,6 +395,13 @@ public class GuiConfigSG extends GuiConfig {
             }
 
         }
+
+        @Override
+        public void valueButtonPressed(int slotIndex)
+        {
+            mc.displayGuiScreen(new GuiSelectStringSG(this.owningScreen, configElement, slotIndex, selectableValues, currentValue, enabled()));
+        }
+
     }
 
 }

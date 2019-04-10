@@ -2,7 +2,6 @@ package spazley.scalingguis.config;
 
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.Loader;
 
 import java.util.*;
 
@@ -10,28 +9,30 @@ public class CustomScales {
     public int guiScale = Minecraft.getMinecraft().gameSettings.guiScale;
     public int hudScale = Minecraft.getMinecraft().gameSettings.guiScale;
     public int tooltipScale = Minecraft.getMinecraft().gameSettings.guiScale;
-    public JsonObject customIndividualGUIScales = new JsonObject();
-    public JsonObject customGroupGUIScales = new JsonObject();
-    public SortedSet<String> loggedGUIClassNames = new TreeSet<>();
-    public SortedSet<String> blacklistGUIClassNames = new TreeSet<>();// blacklistDefault();
+    public JsonObject customIndividualGuiScales = new JsonObject();
+    public JsonObject customGroupGuiScales = new JsonObject();
+    //public SortedSet<String> loggedGuiClassNames = new TreeSet<>();
+    public Set<String> loggedGuiClassNames = new LinkedHashSet<>();
+    //public List<String> loggedGuiClassNames = new ArrayList<>();
+    public SortedSet<String> blacklistGuiClassNames = new TreeSet<>();// blacklistDefault();
 
 
     public void checkCustomEntries()
     {
-        for (String s : JsonHelper.getKeyList(customIndividualGUIScales)) {
-            if (!customIndividualGUIScales.getAsJsonObject(s).has("scale")) {
-                customIndividualGUIScales.getAsJsonObject(s).addProperty("scale", Minecraft.getMinecraft().gameSettings.guiScale);
+        for (String s : JsonHelper.getKeyList(customIndividualGuiScales)) {
+            if (!customIndividualGuiScales.getAsJsonObject(s).has("scale")) {
+                customIndividualGuiScales.getAsJsonObject(s).addProperty("scale", Minecraft.getMinecraft().gameSettings.guiScale);
             }
-            if (!customIndividualGUIScales.getAsJsonObject(s).has("name")) {
-                customIndividualGUIScales.getAsJsonObject(s).addProperty("name", s);
+            if (!customIndividualGuiScales.getAsJsonObject(s).has("name")) {
+                customIndividualGuiScales.getAsJsonObject(s).addProperty("name", s);
             }
         }
-        for (String s : JsonHelper.getKeyList(customGroupGUIScales)) {
-            if (!customGroupGUIScales.getAsJsonObject(s).has("scale")) {
-                customGroupGUIScales.getAsJsonObject(s).addProperty("scale", Minecraft.getMinecraft().gameSettings.guiScale);
+        for (String s : JsonHelper.getKeyList(customGroupGuiScales)) {
+            if (!customGroupGuiScales.getAsJsonObject(s).has("scale")) {
+                customGroupGuiScales.getAsJsonObject(s).addProperty("scale", Minecraft.getMinecraft().gameSettings.guiScale);
             }
-            if (!customGroupGUIScales.getAsJsonObject(s).has("name")) {
-                customGroupGUIScales.getAsJsonObject(s).addProperty("name", s);
+            if (!customGroupGuiScales.getAsJsonObject(s).has("name")) {
+                customGroupGuiScales.getAsJsonObject(s).addProperty("name", s);
             }
         }
     }
@@ -89,9 +90,9 @@ public class CustomScales {
         int minValue = 0;
         int maxValue = 3;
 
-        for (String s : customIndividualGUIScales.keySet()) {
-            String val = customIndividualGUIScales.getAsJsonObject(s).get("scale").getAsString();
-            String name = customIndividualGUIScales.getAsJsonObject(s).get("name").getAsString();
+        for (String s : customIndividualGuiScales.keySet()) {
+            String val = customIndividualGuiScales.getAsJsonObject(s).get("scale").getAsString();
+            String name = customIndividualGuiScales.getAsJsonObject(s).get("name").getAsString();
 
             Property prop = new Property(name, val, Property.Type.INTEGER, "");
             prop.setDefaultValue(defaultScale);
@@ -113,9 +114,9 @@ public class CustomScales {
         int minValue = 0;
         int maxValue = 3;
 
-        for (String s : customGroupGUIScales.keySet()) {
-            String val = customGroupGUIScales.getAsJsonObject(s).get("scale").getAsString();
-            String name = customGroupGUIScales.getAsJsonObject(s).get("name").getAsString();
+        for (String s : customGroupGuiScales.keySet()) {
+            String val = customGroupGuiScales.getAsJsonObject(s).get("scale").getAsString();
+            String name = customGroupGuiScales.getAsJsonObject(s).get("name").getAsString();
 
             Property prop = new Property(name, val, Property.Type.INTEGER);
             prop.setDefaultValue(defaultScale);

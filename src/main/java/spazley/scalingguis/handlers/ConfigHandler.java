@@ -48,6 +48,7 @@ public class ConfigHandler
     public static boolean persistentLog = true;
     public static boolean addDefaultBlacklist = true;
     public static boolean logGuiClassNamesChat = false;
+    private static boolean sortLoggedAlphabetically = false;
 
     //public static String configPath = "config/ScalingGUIs/ScalingGUIs.cfg";
     public static String scaleOverridesPath = "config/ScalingGUIs/ScalingGUIsCustomScales.json";
@@ -65,10 +66,11 @@ public class ConfigHandler
 
         config.load();
 
-        logGuiClassNames = config.getBoolean("Log GUI Class Names", Configuration.CATEGORY_GENERAL, false, "Enable logging of GUI class names in the Minecraft log.");
-        persistentLog = config.getBoolean("Persistent Log", Configuration.CATEGORY_GENERAL, false, "Maintain persistent log of GUI class names.");
-        addDefaultBlacklist = config.getBoolean("Add Default Blacklist", Configuration.CATEGORY_GENERAL, true, "Update the blacklist with the current default blacklist. Will not remove custom blacklist entries.");
-        logGuiClassNamesChat = config.getBoolean("Log GUI Class Names To Chat", Configuration.CATEGORY_GENERAL, false, "Display opened GUI class names in the ingame chat.");
+        logGuiClassNames = config.getBoolean("logNames", Configuration.CATEGORY_GENERAL, false, "Enable logging of GUI class names in the Minecraft log.");
+        persistentLog = config.getBoolean("persistentLog", Configuration.CATEGORY_GENERAL, false, "Maintain persistent log of GUI class names.");
+        addDefaultBlacklist = config.getBoolean("updateBlacklist", Configuration.CATEGORY_GENERAL, true, "Update the blacklist with the current default blacklist. Will not remove custom blacklist entries.");
+        logGuiClassNamesChat = config.getBoolean("logToChat", Configuration.CATEGORY_GENERAL, false, "Display opened GUI class names in the ingame chat.");
+        sortLoggedAlphabetically = config.getBoolean("sortNames", Configuration.CATEGORY_GENERAL, false, "Diplay logged GUI class names alphabetically in select-value screens");
         //Collections.addAll(loggedGuiClassNames, config.getStringList("Logged GUI Class Names", "log", new String[0], "Persistent log of GUI class names. Updated on config save."));
 
         config.save();
@@ -83,15 +85,15 @@ public class ConfigHandler
 
             for (String key : map.keySet()) {
                 if (Loader.isModLoaded(key)) {
-                    customScales.blacklistGUIClassNames.addAll(map.get(key));
+                    customScales.blacklistGuiClassNames.addAll(map.get(key));
                 }
             }
         }
         JsonHelper.scalesToJsonFile(fileScaleOverrides, customScales);
 
-        individualGuiClassNames = JsonHelper.getKeyList(customScales.customIndividualGUIScales);
-        groupGuiClassNames = JsonHelper.getKeyList(customScales.customGroupGUIScales);
-        blacklistGuiClassNames = new ArrayList<>(customScales.blacklistGUIClassNames);
+        individualGuiClassNames = JsonHelper.getKeyList(customScales.customIndividualGuiScales);
+        groupGuiClassNames = JsonHelper.getKeyList(customScales.customGroupGuiScales);
+        blacklistGuiClassNames = new ArrayList<>(customScales.blacklistGuiClassNames);
     }
 
     public static void saveConfigs()
@@ -136,13 +138,13 @@ public class ConfigHandler
 
     public static int getIndividualScale(String className)
     {
-        int scale = customScales.customIndividualGUIScales.getAsJsonObject(className).getAsJsonPrimitive("scale").getAsInt();
+        int scale = customScales.customIndividualGuiScales.getAsJsonObject(className).getAsJsonPrimitive("scale").getAsInt();
         return scale == MAX_SCALE ? customScales.guiScale : scale;
     }
 
     public static int getGroupScale(String className)
     {
-        int scale = customScales.customGroupGUIScales.getAsJsonObject(className).getAsJsonPrimitive("scale").getAsInt();
+        int scale = customScales.customGroupGuiScales.getAsJsonObject(className).getAsJsonPrimitive("scale").getAsInt();
         return scale == MAX_SCALE ? customScales.guiScale : scale;
     }
 
@@ -206,9 +208,9 @@ public class ConfigHandler
         int maxValue = 3;
 */
 
-        for (String s : JsonHelper.getKeyList(customScales.customIndividualGUIScales)) {
-            String val = customScales.customIndividualGUIScales.getAsJsonObject(s).get("scale").getAsString();
-            String name = customScales.customIndividualGUIScales.getAsJsonObject(s).get("name").getAsString();
+        for (String s : JsonHelper.getKeyList(customScales.customIndividualGuiScales)) {
+            String val = customScales.customIndividualGuiScales.getAsJsonObject(s).get("scale").getAsString();
+            String name = customScales.customIndividualGuiScales.getAsJsonObject(s).get("name").getAsString();
 
             Property prop = new Property(name, val, Property.Type.INTEGER, "");
             prop.setDefaultValue(defaultScale);
@@ -230,9 +232,9 @@ public class ConfigHandler
         int maxValue = 3;
 */
 
-        for (String s : JsonHelper.getKeyList(customScales.customGroupGUIScales)) {
-            String val = customScales.customGroupGUIScales.getAsJsonObject(s).get("scale").getAsString();
-            String name = customScales.customGroupGUIScales.getAsJsonObject(s).get("name").getAsString();
+        for (String s : JsonHelper.getKeyList(customScales.customGroupGuiScales)) {
+            String val = customScales.customGroupGuiScales.getAsJsonObject(s).get("scale").getAsString();
+            String name = customScales.customGroupGuiScales.getAsJsonObject(s).get("name").getAsString();
 
             Property prop = new Property(name, val, Property.Type.INTEGER);
             prop.setDefaultValue(defaultScale);
@@ -258,13 +260,19 @@ public class ConfigHandler
 
     public static Map<Object, String> getUnusedLoggedClassNames()
     {
-        List<String> list = new ArrayList<>(customScales.loggedGUIClassNames);
+        List<String> list = new ArrayList<>(customScales.loggedGuiClassNames);
 
         list.removeAll(individualGuiClassNames);
         list.removeAll(groupGuiClassNames);
         list.removeAll(blacklistGuiClassNames);
 
-        Map<Object, String> map = new TreeMap<>();
+        if (sortLoggedAlphabetically) {
+            Collections.sort(list);
+        } else {
+            Collections.reverse(list);
+        }
+
+        Map<Object, String> map = new LinkedHashMap<>();
 
         for (String s : list) {
             map.put((Object)s,s);
@@ -275,7 +283,8 @@ public class ConfigHandler
 
     public static void logClassName(String className)
     {
-        customScales.loggedGUIClassNames.add(className);
+        customScales.loggedGuiClassNames.remove(className);
+        customScales.loggedGuiClassNames.add(className);
     }
 
 }
