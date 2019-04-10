@@ -67,7 +67,7 @@ public class ConfigHandler
         config.load();
 
         logGuiClassNames = config.getBoolean("logNames", Configuration.CATEGORY_GENERAL, false, "Enable logging of GUI class names in the Minecraft log.");
-        persistentLog = config.getBoolean("persistentLog", Configuration.CATEGORY_GENERAL, false, "Maintain persistent log of GUI class names.");
+        persistentLog = config.getBoolean("persistentLog", Configuration.CATEGORY_GENERAL, true, "Maintain persistent log of GUI class names.");
         addDefaultBlacklist = config.getBoolean("updateBlacklist", Configuration.CATEGORY_GENERAL, true, "Update the blacklist with the current default blacklist. Will not remove custom blacklist entries.");
         logGuiClassNamesChat = config.getBoolean("logToChat", Configuration.CATEGORY_GENERAL, false, "Display opened GUI class names in the ingame chat.");
         sortLoggedAlphabetically = config.getBoolean("sortNames", Configuration.CATEGORY_GENERAL, false, "Diplay logged GUI class names alphabetically in select-value screens");

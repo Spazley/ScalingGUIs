@@ -1,7 +1,6 @@
 package spazley.scalingguis.gui.guiconfig;
 
 import com.google.gson.JsonObject;
-import scala.actors.threadpool.Arrays;
 import spazley.scalingguis.ScalingGUIs;
 import spazley.scalingguis.config.CustomScales;
 import spazley.scalingguis.handlers.ConfigHandler;
@@ -14,10 +13,7 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.*;
 import org.lwjgl.input.Keyboard;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 public class GuiConfigSG extends GuiConfig {
 
@@ -217,7 +213,7 @@ public class GuiConfigSG extends GuiConfig {
         for (IConfigElement ice : iConfigElementIn.getChildElements()) {
             //((ConfigElement)ice).;
             if ("blacklist".equals(ice.getName())) {
-               customScales.blacklistGuiClassNames = new TreeSet<String>(Arrays.asList(ice.getList()));
+               customScales.blacklistGuiClassNames = new TreeSet<String>(Arrays.asList(((String[])ice.getList())));
             }
         }
     }

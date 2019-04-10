@@ -158,12 +158,12 @@ public class ClientEventHandler {
     }
 
     //Copied from Vise. See license.
-    @SubscribeEvent(priority=EventPriority.HIGHEST)
+    @SubscribeEvent(priority=EventPriority.LOWEST)
     public void onPostRenderTooltip(RenderTooltipEvent.PostText e) {
         GlStateManager.popMatrix();
-        if (Minecraft.getMinecraft().currentScreen != null && "mezz.jei.gui.recipes.RecipesGui".equals(Minecraft.getMinecraft().currentScreen.getClass().getName())) {
+        if (Minecraft.getMinecraft().currentScreen != null) {
             GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
-            ScalingGUIs.logger.info(currentScreen.getClass().getName());
+            //ScalingGUIs.logger.info(currentScreen.getClass().getName());
         }
     }
 
