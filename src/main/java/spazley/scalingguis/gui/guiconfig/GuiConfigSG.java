@@ -329,9 +329,14 @@ public class GuiConfigSG extends GuiConfig {
                     }
                 }
 
+                if ("".equals(guiClassName)) {
+                    this.mc.displayGuiScreen(parentScreen);
+                }
+
                 try {
                     Class c = Class.forName(guiClassName); //Check that provided class name is valid
                 } catch (Exception e) {
+
                     invalidClassName = true;
                     warningText = "Unable to determine class for '" + guiClassName + "'.";
                     ScalingGUIs.logger.warn(warningText);
