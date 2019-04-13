@@ -1,5 +1,8 @@
 Changelog
 
+1.12.2-0.0.3.4
++Prep for initial release.
+
 1.12.2-0.0.3.3
 +Fixed bug. Incorrect import statement. (scala Array instead of java.util)
 
