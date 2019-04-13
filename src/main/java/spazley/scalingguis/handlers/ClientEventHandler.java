@@ -5,7 +5,6 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -40,7 +39,7 @@ public class ClientEventHandler {
             try{
                 String name = e.getGui().getClass().getName();
                 if ((name.equals(lastGui) && Minecraft.getMinecraft().gameSettings.guiScale == lastScale)) {
-                    return; //
+                    return;
                 }
                 if (ConfigHandler.inBlacklist(name)) {
                     return;
@@ -84,15 +83,6 @@ public class ClientEventHandler {
                 lastScale = -1;
                 //ScalingGUIs.logger.info("GUI IS NULL.");
 
-/*
-                int newScale = ConfigHandler.customScales.guiScale;
-                ScalingGUIs.logger.info("GUI IS null. Setting scale to " + newScale + ".");
-                Minecraft.getMinecraft().gameSettings.guiScale = newScale;
-                ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
-                int w = scaledResolution.getScaledWidth();
-                int h = scaledResolution.getScaledWidth();
-                Minecraft.getMinecraft().currentScreen.setWorldAndResolution(Minecraft.getMinecraft(), w, h);
-*/
             } catch(Exception ex) {
                 //ScalingGUIs.logger.warn("Error in onGuiOpen (else): ", ex);
             }
@@ -191,42 +181,30 @@ public class ClientEventHandler {
     public void onPostInit(GuiScreenEvent.InitGuiEvent.Post e)
     {
         if (e.getGui() instanceof GuiVideoSettings) {
-                GuiVideoSettings gvs = (GuiVideoSettings) e.getGui();
-                List<GuiOptionsRowList.Row> options = ((GuiOptionsRowList)gvs.optionsRowList).options;
+            GuiVideoSettings gvs = (GuiVideoSettings) e.getGui();
+            List<GuiOptionsRowList.Row> options = ((GuiOptionsRowList)gvs.optionsRowList).options;
 
-                int i = 0;
-                for (GuiOptionsRowList.Row row : options) {
-                    GuiButton buttonA = row.buttonA;
-                    GuiButton buttonB = row.buttonB;
-                    boolean found = false;
-                    if (buttonA instanceof GuiOptionButton && ((GuiOptionButton)buttonA).getOption() == GameSettings.Options.GUI_SCALE) {
-                        buttonA = new GuiVideoSettingsButton(row.buttonA.id, buttonA.x, buttonA.y, buttonA.width, buttonA.height, I18n.format("scalingguis.videosettings.button"));
-                        found = true;
-                        //ScalingGUIs.logger.info("Found scale button in buttonA.");
-                    }
-                    if (buttonB instanceof GuiOptionButton && ((GuiOptionButton)buttonB).getOption() == GameSettings.Options.GUI_SCALE) {
-                        buttonB = new GuiVideoSettingsButton(row.buttonB.id, buttonB.x, buttonB.y, buttonB.width, buttonB.height, I18n.format("scalingguis.videosettings.button"));
-                        found = true;
-                        //ScalingGUIs.logger.info("Found scale button in buttonB.");
-                    }
-                    if (found) {
-                        options.set(i, new GuiOptionsRowList.Row(buttonA, buttonB));
-                        break;
-                    }
-                    i++;
+            int i = 0;
+            for (GuiOptionsRowList.Row row : options) {
+                GuiButton buttonA = row.buttonA;
+                GuiButton buttonB = row.buttonB;
+                boolean found = false;
+                if (buttonA instanceof GuiOptionButton && ((GuiOptionButton)buttonA).getOption() == GameSettings.Options.GUI_SCALE) {
+                    buttonA = new GuiVideoSettingsButton(row.buttonA.id, buttonA.x, buttonA.y, buttonA.width, buttonA.height, I18n.format("scalingguis.videosettings.button"));
+                    found = true;
+                    //ScalingGUIs.logger.info("Found scale button in buttonA.");
                 }
-        }
-    }
-
-
-    //Temp testing method
-    @SubscribeEvent
-    public void onPreDrawScreen(GuiScreenEvent.DrawScreenEvent.Pre e)
-    {
-        if ("slimeknights.tconstruct.smeltery.client.module.GuiSmelterySideInventory".equals(e.getGui().getClass().getName()))
-        {
-            ScalingGUIs.logger.info("Opened smeltery side inventory.");
-            e.setCanceled(true);
+                if (buttonB instanceof GuiOptionButton && ((GuiOptionButton)buttonB).getOption() == GameSettings.Options.GUI_SCALE) {
+                    buttonB = new GuiVideoSettingsButton(row.buttonB.id, buttonB.x, buttonB.y, buttonB.width, buttonB.height, I18n.format("scalingguis.videosettings.button"));
+                    found = true;
+                    //ScalingGUIs.logger.info("Found scale button in buttonB.");
+                }
+                if (found) {
+                    options.set(i, new GuiOptionsRowList.Row(buttonA, buttonB));
+                    break;
+                }
+                i++;
+            }
         }
     }
 }

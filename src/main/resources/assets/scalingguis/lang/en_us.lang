@@ -20,7 +20,6 @@ scalingguis.config.add.classselect.tooltip=Select GUI class name from list of un
 scalingguis.config.add.classname.tooltip=Full class name for new GUI entry. EX: 'net.minecraft.client.gui.GuiMainMenu'.
 scalingguis.config.add.displayname.tooltip=Display name for new GUI entry. EX: 'Main Menu'.
 scalingguis.config.add.scale.tooltip=Scale for new GUI entry.
-scalingguis.config.add.error=Unable to determine class from given string.
 
 # GuiVideoSettings
 scalingguis.videosettings.button=GUI Scales

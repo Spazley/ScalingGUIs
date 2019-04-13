@@ -28,19 +28,4 @@ public class ConfigGuiFactory implements IModGuiFactory
     {
         return true;
     }
-
-/*
-    public static class SGConfigGui extends GuiConfig
-    {
-        public SGConfigGui(GuiScreen parentScreen)
-        {
-            super(parentScreen, getConfigElements(), ScalingGUIs.MODID, false, false, "scalingguis.config.title");
-        }
-
-        private static List<IConfigElement> getConfigElements()
-        {
-
-        }
-    }
-*/
 }

@@ -17,24 +17,6 @@ import net.minecraftforge.fml.client.config.IConfigElement;
 import java.io.*;
 import java.util.*;
 
-/*
-@Config(modid = ScalingGUIs.MODID, name = "ScalingGUIs")
-public class ConfigHandler {
-
-    @Config.Comment("Enable logging of GUI class names.")
-    public static boolean logGuiClassNames = false;
-
-    @Config.Comment("Maintain separate persistent log of GUI class names.")
-    public static boolean persistentLog = false;
-
-    //@Config.Comment("Default scale for GUI rendering. Auto is 0.")
-    //@Config.RangeInt(min = 0, max = 16)
-    //public static int mainScale = Minecraft.getMinecraft().gameSettings.guiScale;
-
-}
-*/
-
-
 public class ConfigHandler
 {
     public static Configuration config;
@@ -175,7 +157,6 @@ public class ConfigHandler
     public static List<IConfigElement> getMainsList()
     {
         List<IConfigElement> list = new ArrayList<>();
-        //int defaultScale = customScales.guiScale;
         int defaultScale = MAX_SCALE; //Causes the scale to default to the main GUI scale
 
         Property guiScaleProp = new Property("guiScale", String.valueOf(customScales.guiScale), Property.Type.INTEGER, "scalingguis.config.main.guiscale");
@@ -203,10 +184,6 @@ public class ConfigHandler
     {
         List<IConfigElement> list = new ArrayList<>();
         int defaultScale = customScales.guiScale;
-/*
-        int minValue = 0;
-        int maxValue = 3;
-*/
 
         for (String s : JsonHelper.getKeyList(customScales.customIndividualGuiScales)) {
             String val = customScales.customIndividualGuiScales.getAsJsonObject(s).get("scale").getAsString();
@@ -227,10 +204,6 @@ public class ConfigHandler
     {
         List<IConfigElement> list = new ArrayList<>();
         int defaultScale = customScales.guiScale;
-/*
-        int minValue = 0;
-        int maxValue = 3;
-*/
 
         for (String s : JsonHelper.getKeyList(customScales.customGroupGuiScales)) {
             String val = customScales.customGroupGuiScales.getAsJsonObject(s).get("scale").getAsString();

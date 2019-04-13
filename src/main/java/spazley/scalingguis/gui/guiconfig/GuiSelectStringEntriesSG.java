@@ -1,13 +1,10 @@
 package spazley.scalingguis.gui.guiconfig;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiListExtended;
-import net.minecraftforge.fml.client.config.GuiSelectString;
 import net.minecraftforge.fml.client.config.GuiSelectStringEntries;
 import net.minecraftforge.fml.client.config.IConfigElement;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;

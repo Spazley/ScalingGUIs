@@ -30,7 +30,7 @@ public class JsonHelper
 
             return scales;
         } catch(Exception e) {
-            ScalingGUIs.logger.error("Failed to load json assets.scalingguis.file. Backing up the current assets.scalingguis.file and creating a new one.", e);
+            ScalingGUIs.logger.error("Failed to load json file. Backing up the current file and creating a new one.", e);
             backupJson(file);
 
             return new CustomScales();
@@ -47,7 +47,7 @@ public class JsonHelper
                 file.createNewFile();
             }
         } catch(Exception e) {
-            ScalingGUIs.logger.error("An error occurred while saving scales to json assets.scalingguis.file.", e);
+            ScalingGUIs.logger.error("An error occurred while saving scales to json file.", e);
             return;
         }
 
@@ -55,11 +55,11 @@ public class JsonHelper
             GSON.toJson(scales, osw);
             osw.flush();
         } catch(Exception e) {
-            ScalingGUIs.logger.error("An error occured while saving scales to json assets.scalingguis.file.", e);
+            ScalingGUIs.logger.error("An error occured while saving scales to json file.", e);
         }
     }
 
-    private static JsonObject jsonObjectFromJsonObject(JsonObject jsonObjectIn, String id)
+/*    private static JsonObject jsonObjectFromJsonObject(JsonObject jsonObjectIn, String id)
     {
         if(jsonObjectIn == null) {
             return new JsonObject();
@@ -70,7 +70,7 @@ public class JsonHelper
         }
 
         return new JsonObject();
-    }
+    }*/
 
     public static List<String> getKeyList(JsonObject jsonObjectIn)
     {
@@ -95,16 +95,16 @@ public class JsonHelper
         return keyList;
     }
 
-    public static int getScaleAsInt(JsonObject jsonObjectIn, String id)
+/*    public static int getScaleAsInt(JsonObject jsonObjectIn, String id)
     {
         if (jsonObjectIn.has(id) && jsonObjectIn.getAsJsonPrimitive(id).isNumber()) {
             return (int)jsonObjectIn.getAsJsonPrimitive(id).getAsNumber();
         }
 
         return Minecraft.getMinecraft().gameSettings.guiScale;
-    }
+    }*/
 
-    public static String instanceWithinGroup(Object o, List<String> keyList)
+/*    public static String instanceWithinGroup(Object o, List<String> keyList)
     {
         for (String s : keyList) {
             try {
@@ -117,7 +117,7 @@ public class JsonHelper
             }
         }
         return "NONE";
-    }
+    }*/
 
     public static Map<String, List<String>> defaultBlacklistsFromJsonFile()
     {
@@ -133,7 +133,6 @@ public class JsonHelper
         }
 
         return new HashMap<>();
-        //return array;
     }
 
     private static void copyFile(File source, File dest) throws IOException {
