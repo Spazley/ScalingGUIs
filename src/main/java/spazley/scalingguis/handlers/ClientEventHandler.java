@@ -30,6 +30,8 @@ public class ClientEventHandler {
 
     private boolean ingameRenderTakenOver = false;
 
+    private static boolean cancelGuiVideoSettings = false; //Prevent GuiVideoSettings from changing scale after opening GuiConfigSG
+
 
     //Update game scale to reflect setting for opened GUI.
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -42,6 +44,12 @@ public class ClientEventHandler {
                     return;
                 }
                 if (ConfigHandler.inBlacklist(name)) {
+                    return;
+                }
+                //Prevent GuiVideoSettings from changing scale after opening GuiConfigSG
+                if ((e.getGui() instanceof GuiVideoSettings) && cancelGuiVideoSettings) {
+                    e.setCanceled(true);
+                    setCancelGuiVideoSettings(false);
                     return;
                 }
 
@@ -63,7 +71,7 @@ public class ClientEventHandler {
                     return;
                 }
                 lastScale = newScale;
-                //ScalingGUIs.logger.info("GUI is NOT null. Setting scale to " + newScale + ".");
+                ScalingGUIs.logger.info("GUI is NOT null. Setting scale to " + newScale + ".");
 
 
                 Minecraft.getMinecraft().gameSettings.guiScale = newScale;
@@ -206,5 +214,10 @@ public class ClientEventHandler {
                 i++;
             }
         }
+    }
+
+    public static void setCancelGuiVideoSettings(boolean bool)
+    {
+        cancelGuiVideoSettings = bool;
     }
 }

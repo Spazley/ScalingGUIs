@@ -3,6 +3,7 @@ package spazley.scalingguis.gui.videosettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import spazley.scalingguis.gui.guiconfig.GuiConfigSG;
+import spazley.scalingguis.handlers.ClientEventHandler;
 
 public class GuiVideoSettingsButton extends GuiButton
 {
@@ -19,6 +20,7 @@ public class GuiVideoSettingsButton extends GuiButton
         if (superPressed) {
             this.playPressSound(mc.getSoundHandler());
             mc.displayGuiScreen(new GuiConfigSG(mc.currentScreen, GuiConfigSG.MAIN_ID));
+            ClientEventHandler.setCancelGuiVideoSettings(true); //Prevent GuiVideoSettings from changing scale after opening GuiConfigSG
         }
 
         return superPressed;
