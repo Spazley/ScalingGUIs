@@ -24,6 +24,6 @@ ScalingGUIs presents the scale settings as sliders. The scales range from 1x (Sm
 ScalingGUIs allows logging of GUI class names in the Minecraft log and persistent logging in the `ScalingGUIsCustomScales.json` config file.
 
 ## TODO
-* Set up the wiki to better describe operation and functionality
 * Add SelectValue entry to blacklist config category as in the Individual and Group categories
 * Add system to recouple GUI scales.  Will allow for a single slider to scale multiple differently-named GUIs
+* Look into decoupling JEI plugins within the recipes GUI
