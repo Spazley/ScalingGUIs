@@ -21,7 +21,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-ScalingGUIs includes code from Vise. Vise is licensed under the MIT license:
+ScalingGUIs includes code from Vise. Copied methods are noted by a comment preceding them.
+Vise is licensed under the MIT license:
 
 
 The MIT License (MIT)
