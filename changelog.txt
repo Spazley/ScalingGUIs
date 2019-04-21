@@ -1,7 +1,13 @@
 Changelog
 
+1.12.2-1.0.1.0
+* Added delete function to custom entry screens
+
+1.12.2-1.0.0.1
+* Select-value screens now return to parent screen on ESC press
+
 1.12.2-1.0.0.0
-* SelectValue screen now returns to parent screen on ESCAPE press
+* Initial release
 
 1.12.2-0.0.3.4
 * Prep for initial release.
