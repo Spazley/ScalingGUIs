@@ -260,4 +260,14 @@ public class ConfigHandler
         customScales.loggedGuiClassNames.add(className);
     }
 
+    public static void removeIndividualClassName(String className)
+    {
+        individualGuiClassNames.remove(className);
+    }
+
+    public static void removeGroupClassName(String className)
+    {
+        groupGuiClassNames.remove(className);
+    }
+
 }

@@ -32,6 +32,7 @@ public class GuiConfigSG extends GuiConfig {
     protected static final String NEW_INDIVIDUAL_ID = "AddNewIndividual";
     protected static final String NEW_GROUP_ID = "AddNewGroup";
     protected static final String NEW_BLACKLIST_ID = "AddNewBlacklist";
+    protected static final String DELETE_ID = "DeleteEntry";
 
     //Title Lang
     private static final String MAIN_TITLE = "scalingguis.config.main.title";
@@ -42,6 +43,8 @@ public class GuiConfigSG extends GuiConfig {
     private static final String NEW_INDIVIDUAL_TITLE = "scalingguis.config.individual.add.title";
     private static final String NEW_GROUP_TITLE = "scalingguis.config.group.add.title";
     private static final String NEW_BLACKLIST_TITLE = "scalingguis.config.blacklist.add.title";
+    private static final String DELETE_INDIVIDUAL_TITLE = "scalingguis.config.individual.delete.title";
+    private static final String DELETE_GROUP_TITLE = "scalingguis.config.group.delete.title";
 
 
     public GuiConfigSG(GuiScreen parentScreen, String configID) {
@@ -63,10 +66,13 @@ public class GuiConfigSG extends GuiConfig {
         //Individual Config Menu Elements
         individualElements.addAll(ConfigHandler.getIndividualsList());
         individualElements.add(new DummyConfigElement.DummyCategoryElement(NEW_INDIVIDUAL_ID, NEW_INDIVIDUAL_TITLE, NewIndividualScale.class));
+        individualElements.add(new DummyConfigElement.DummyCategoryElement(DELETE_ID, DELETE_INDIVIDUAL_TITLE, DeleteEntry.class));
 
         //Group Config Menu Elements
         groupElements.addAll(ConfigHandler.getGroupsList());
         groupElements.add(new DummyConfigElement.DummyCategoryElement(NEW_GROUP_ID, NEW_GROUP_TITLE, NewGroupScale.class));
+        groupElements.add(new DummyConfigElement.DummyCategoryElement(DELETE_ID, DELETE_GROUP_TITLE, DeleteEntry.class));
+
 
         //Blacklist Config Menu Elements
         blacklistElements.addAll(ConfigHandler.getBlacklistElementsList());
@@ -171,7 +177,7 @@ public class GuiConfigSG extends GuiConfig {
         JsonObject individuals = new JsonObject();
 
         for (IConfigElement ice : iConfigElementIn.getChildElements()) {
-            if (!NEW_INDIVIDUAL_ID.equals(ice.getName()) && !"removeEntry".equals(ice.getName())) {
+            if (!NEW_INDIVIDUAL_ID.equals(ice.getName()) && !DELETE_ID.equals(ice.getName())) {
                 String guiClassName = ice.getComment();
                 int guiScale = Integer.valueOf(ice.get().toString());
                 String guiDisplayName = ice.getName();
@@ -192,7 +198,7 @@ public class GuiConfigSG extends GuiConfig {
         JsonObject groups = new JsonObject();
 
         for (IConfigElement ice : iConfigElementIn.getChildElements()) {
-            if (!NEW_GROUP_ID.equals(ice.getName()) && !"removeEntry".equals(ice.getName())) {
+            if (!NEW_GROUP_ID.equals(ice.getName()) && !DELETE_ID.equals(ice.getName())) {
                 String guiClassName = ice.getComment();
                 int guiScale = Integer.valueOf(ice.get().toString());
                 String guiDisplayName = ice.getName();
@@ -340,7 +346,7 @@ public class GuiConfigSG extends GuiConfig {
                     return;
                 }
 
-                ((GuiConfig) this.parentScreen).configElements.add(((GuiConfig) this.parentScreen).configElements.size() - 1, constructNewScaleElement());
+                ((GuiConfig) this.parentScreen).configElements.add(((GuiConfig) this.parentScreen).configElements.size() - 2, constructNewScaleElement());
                 ((GuiConfig) this.parentScreen).needsRefresh = true;
                 this.mc.displayGuiScreen(this.parentScreen);
 
@@ -370,7 +376,8 @@ public class GuiConfigSG extends GuiConfig {
         }
     }
 
-    public static class GuiClassName extends GuiConfigEntries.SelectValueEntry {
+    public static class GuiClassName extends GuiConfigEntries.SelectValueEntry
+    {
         public GuiClassName(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
             super(owningScreen, owningEntryList, prop, getKnownGuiClassNames());
             if (this.selectableValues.size() == 0) {
@@ -400,9 +407,131 @@ public class GuiConfigSG extends GuiConfig {
         @Override
         public void valueButtonPressed(int slotIndex)
         {
-            mc.displayGuiScreen(new GuiSelectStringSG(this.owningScreen, configElement, slotIndex, selectableValues, currentValue, enabled()));
+            mc.displayGuiScreen(new GuiSelectStringSG(this.owningScreen, configElement, slotIndex, getKnownGuiClassNames(), currentValue, enabled()));
         }
 
     }
 
+    public static class DeleteEntry extends GuiConfigEntries.CategoryEntry
+    {
+        public DeleteEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop) {
+            super(owningScreen, owningEntryList, prop);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen() {
+            ScaleType type = INDIVIDUAL_ID.equals(this.owningScreen.configID) ? ScaleType.INDIVIDUAL : ScaleType.GROUP;
+            return new GuiDeleteEntry(this.owningScreen, this.owningScreen.modID, type);
+        }
+
+        @Override
+        public boolean enabled()
+        {
+            return (this.owningEntryList.getSize() > 2);
+        }
+    }
+
+    public static class GuiDeleteEntry extends GuiConfig
+    {
+        private ScaleType type;
+        //private boolean skip = false;
+
+        public GuiDeleteEntry(GuiConfig parentScreen, String modID, ScaleType typeIn)
+        {
+            super(parentScreen, getDeleteElements(parentScreen), modID, false, false, "titlePlaceholder");
+            type = typeIn;
+        }
+
+        public static List<IConfigElement> getDeleteElements(GuiConfig parentScreen)
+        {
+            List<IConfigElement> list = new ArrayList<>();
+
+            list.add(new DummyConfigElement(DELETE_ID, "", ConfigGuiType.STRING, "scalingguis.placeholder").setCustomListEntryClass(SelectDeleteEntry.class));
+
+            return list;
+        }
+
+        @Override
+        public void initGui()
+        {
+            super.initGui();
+        }
+
+        @Override
+        public void drawScreen(int mouseX, int mouseY, float partialTicks)
+        {
+            ListIterator<GuiConfigEntries.IConfigEntry> iter = this.entryList.listEntries.listIterator();
+
+            while (iter.hasNext()) {
+                int index = iter.nextIndex();
+                GuiConfigEntries.IConfigEntry ice = iter.next();
+
+                ((SelectDeleteEntry)ice).valueButtonPressed(index);
+
+            }
+        }
+
+        public void removeEntry(String removeName)
+        {
+            Iterator<IConfigElement> iter = ((GuiConfig)parentScreen).configElements.iterator();
+            while (iter.hasNext()) {
+                IConfigElement ice = iter.next();
+                if (!NEW_INDIVIDUAL_ID.equals(ice.getName()) && !NEW_BLACKLIST_ID.equals(ice.getName()) && !DELETE_ID.equals(ice.getName())) {
+                    if (removeName.equals(ice.getComment())) {
+                        //((GuiConfig)parentScreen).configElements.remove(ice);
+                        iter.remove();
+                        ((GuiConfig)parentScreen).needsRefresh = true;
+                        if (type == ScaleType.INDIVIDUAL) {
+                            ConfigHandler.removeIndividualClassName(removeName);
+                        } else {
+                            ConfigHandler.removeGroupClassName(removeName);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static class SelectDeleteEntry extends GuiConfigEntries.SelectValueEntry
+    {
+        public SelectDeleteEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
+        {
+            super(owningScreen, owningEntryList, prop, getDeleteNames(owningScreen));
+            if (this.selectableValues.size() == 0) {
+                this.btnValue.enabled = false;
+            }
+        }
+
+        private static Map<Object, String> getDeleteNames(GuiConfig owningScreen)
+        {
+            Map<Object, String> map = new LinkedHashMap<>();
+
+            for (IConfigElement ice : ((GuiConfig)owningScreen.parentScreen).configElements) {
+                if (!NEW_INDIVIDUAL_ID.equals(ice.getName()) && !NEW_GROUP_ID.equals(ice.getName()) && !DELETE_ID.equals(ice.getName())) {
+                    String displayName = ice.getName();
+                    String className = ice.getComment();
+                    map.put(className, displayName + ":  " + className);
+                }
+            }
+
+            return map;
+        }
+
+        @Override
+        public void valueButtonPressed(int slotIndex)
+        {
+            mc.displayGuiScreen(new GuiSelectDeleteSG(this.owningScreen, configElement, slotIndex, selectableValues, currentValue, enabled()));
+        }
+
+        @Override
+        public void setValueFromChildScreen(Object newValue)
+        {
+            if (enabled() && currentValue != null ? !currentValue.equals(newValue) : newValue != null)
+            {
+                //currentValue = newValue;
+                //updateValueButtonText();
+                ((GuiDeleteEntry)owningScreen).removeEntry((String)newValue);
+            }
+        }
+    }
 }

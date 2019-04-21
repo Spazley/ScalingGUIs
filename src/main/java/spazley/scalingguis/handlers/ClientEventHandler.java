@@ -71,7 +71,7 @@ public class ClientEventHandler {
                     return;
                 }
                 lastScale = newScale;
-                ScalingGUIs.logger.info("GUI is NOT null. Setting scale to " + newScale + ".");
+                //ScalingGUIs.logger.info("GUI is NOT null. Setting scale to " + newScale + ".");
 
 
                 Minecraft.getMinecraft().gameSettings.guiScale = newScale;
