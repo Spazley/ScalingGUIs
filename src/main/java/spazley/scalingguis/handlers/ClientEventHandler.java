@@ -10,6 +10,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -17,6 +18,7 @@ import spazley.scalingguis.ScalingGUIs;
 import spazley.scalingguis.gui.videosettings.GuiVideoSettingsButton;
 
 import java.util.List;
+import java.util.ListIterator;
 
 public class ClientEventHandler {
     public ClientEventHandler()
@@ -96,7 +98,6 @@ public class ClientEventHandler {
             }
         }
     }
-
 
     //Copied from Vise and modified to fit the context of ScalingGUIs. See license.
     @SubscribeEvent(priority=EventPriority.HIGHEST)
@@ -190,30 +191,63 @@ public class ClientEventHandler {
     {
         if (e.getGui() instanceof GuiVideoSettings) {
             GuiVideoSettings gvs = (GuiVideoSettings) e.getGui();
-            List<GuiOptionsRowList.Row> options = ((GuiOptionsRowList)gvs.optionsRowList).options;
-
-            int i = 0;
-            for (GuiOptionsRowList.Row row : options) {
-                GuiButton buttonA = row.buttonA;
-                GuiButton buttonB = row.buttonB;
-                boolean found = false;
-                if (buttonA instanceof GuiOptionButton && ((GuiOptionButton)buttonA).getOption() == GameSettings.Options.GUI_SCALE) {
-                    buttonA = new GuiVideoSettingsButton(row.buttonA.id, buttonA.x, buttonA.y, buttonA.width, buttonA.height, I18n.format("scalingguis.videosettings.button"));
-                    found = true;
-                    //ScalingGUIs.logger.info("Found scale button in buttonA.");
-                }
-                if (buttonB instanceof GuiOptionButton && ((GuiOptionButton)buttonB).getOption() == GameSettings.Options.GUI_SCALE) {
-                    buttonB = new GuiVideoSettingsButton(row.buttonB.id, buttonB.x, buttonB.y, buttonB.width, buttonB.height, I18n.format("scalingguis.videosettings.button"));
-                    found = true;
-                    //ScalingGUIs.logger.info("Found scale button in buttonB.");
-                }
-                if (found) {
-                    options.set(i, new GuiOptionsRowList.Row(buttonA, buttonB));
-                    break;
-                }
-                i++;
+            if (FMLClientHandler.instance().hasOptifine()) {
+                //replaceGuiScaleOptionOptifine(gvs);
+                List<GuiButton> buttonList = e.getButtonList();
+                e.setButtonList(replaceGuiScaleOptionOptifine(buttonList));
+            } else {
+                replaceGuiScaleOption(gvs);
             }
         }
+    }
+
+    public void replaceGuiScaleOption(GuiVideoSettings gvs)
+    {
+        List<GuiOptionsRowList.Row> options = ((GuiOptionsRowList)gvs.optionsRowList).options;
+
+        int i = 0;
+        for (GuiOptionsRowList.Row row : options) {
+            GuiButton buttonA = row.buttonA;
+            GuiButton buttonB = row.buttonB;
+            boolean found = false;
+            if (buttonA instanceof GuiOptionButton && ((GuiOptionButton)buttonA).getOption() == GameSettings.Options.GUI_SCALE) {
+                buttonA = new GuiVideoSettingsButton(row.buttonA.id, buttonA.x, buttonA.y, buttonA.width, buttonA.height, I18n.format("scalingguis.videosettings.button"));
+                found = true;
+                //ScalingGUIs.logger.info("Found scale button in buttonA.");
+            }
+            if (buttonB instanceof GuiOptionButton && ((GuiOptionButton)buttonB).getOption() == GameSettings.Options.GUI_SCALE) {
+                buttonB = new GuiVideoSettingsButton(row.buttonB.id, buttonB.x, buttonB.y, buttonB.width, buttonB.height, I18n.format("scalingguis.videosettings.button"));
+                found = true;
+                //ScalingGUIs.logger.info("Found scale button in buttonB.");
+            }
+            if (found) {
+                options.set(i, new GuiOptionsRowList.Row(buttonA, buttonB));
+                break;
+            }
+            i++;
+        }
+    }
+
+    //public void replaceGuiScaleOptionOptifine(GuiVideoSettings gvs)
+    public List<GuiButton> replaceGuiScaleOptionOptifine(List<GuiButton> buttonList)
+    {
+       //ListIterator<GuiButton> iter = gvs.buttonList.listIterator();
+
+       ListIterator<GuiButton> iter = buttonList.listIterator();
+
+       while (iter.hasNext()) {
+           int index = iter.nextIndex();
+           GuiButton guiButton = iter.next();
+
+           if (guiButton instanceof GuiOptionButton && ((GuiOptionButton)guiButton).getOption() == GameSettings.Options.GUI_SCALE) {
+               GuiButton newGuiButton = new GuiVideoSettingsButton(guiButton.id, guiButton.x, guiButton.y, guiButton.width, guiButton.height, I18n.format("scalingguis.videosettings.button"));
+               //gvs.buttonList.set(index, newGuiButton);
+               buttonList.set(index, newGuiButton);
+               break;
+           }
+       }
+
+       return buttonList;
     }
 
     public static void setCancelGuiVideoSettings(boolean bool)

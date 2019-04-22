@@ -26,9 +26,9 @@ public class ScalingGUIs
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
-        if (FMLClientHandler.instance().hasOptifine()) {
+        //if (FMLClientHandler.instance().hasOptifine()) {
             logger.error("Optifine present. Disabling ScalingGUIs.");
-        } else {
+        //} else {
 
             new ClientEventHandler();
             //new ConfigHandler();
@@ -36,7 +36,7 @@ public class ScalingGUIs
             File configFile = new File("config/ScalingGUIs/ScalingGUIs.cfg");
             ConfigHandler.config = new Configuration(configFile, true);
             //ConfigHandler.initConfigs();
-        }
+        //}
     }
 
     @EventHandler

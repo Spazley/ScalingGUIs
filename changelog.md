@@ -1,5 +1,8 @@
 Changelog
 
+1.12.2-1.0.2.0
+* Added compatibility with Optifine
+
 1.12.2-1.0.1.0
 * Added delete function to custom entry screens
 

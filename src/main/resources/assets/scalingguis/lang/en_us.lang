@@ -6,6 +6,8 @@ scalingguis.config.blacklist.title=GUI Class Blacklist
 scalingguis.config.general.title=General Settings
 scalingguis.config.individual.add.title=New Individual Entry
 scalingguis.config.group.add.title=New Group Entry
+scalingguis.config.individual.delete.title=Delete Individual Entry
+scalingguis.config.group.delete.title=Delete Group Entry
 
 # Config Shared
 scalingguis.config.undochanges=Undo Changes
@@ -57,19 +59,18 @@ scalingguis.config.main.persistentlog.tooltip=Track opened GUI class names in th
 # Config Entry Tooltips ----- Individual
 scalingguis.config.individual.title.tooltip=Scale settings menu for custom Individual GUIs.
 scalingguis.config.individual.newcustombutton.tooltip=Add a new custom individual GUI entry.
-scalingguis.config.individual.add.title.tooltip=New Individual Entry
+scalingguis.config.individual.add.title.tooltip=Add a new individual entry.
 scalingguis.config.individual.add.classname.tooltip=Class name for the new GUI entry.
 scalingguis.config.individual.add.displayname.tooltip=Custom display name for the new GUI entry.
-scalingguis.config.individual.remove.tooltip=Remove Individual Entry
-
+scalingguis.config.individual.delete.title.tooltip=Remove an individual entry from the list.
 
 # Config Entry Tooltips ----- Group
 scalingguis.config.group.title.tooltip=Scale settings menu for custom group GUIs.
 scalingguis.config.group.newcustombutton.tooltip=Add a new custom group GUI entry.
-scalingguis.config.group.add.title.tooltip=New Group Entry
+scalingguis.config.group.add.title.tooltip=Add a new group entry.
 scalingguis.config.group.add.classname.tooltip=Class name for the new GUI entry.
 scalingguis.config.group.add.displayname.tooltip=Custom display name for the new GUI entry.
-scalingguis.config.group.remove.tooltip=Remove Group Entry
+scalingguis.config.group.delete.title.tooltip=Remove a group entry from the list.
 
 # Config Entry Tooltips ----- Blacklist
 scalingguis.config.blacklist.title.tooltip=GUI class names blacklisted from scale settings.  Default values ensure screens consisting of multiple GUIs scale to the initial GUI's scale.
