@@ -1,5 +1,8 @@
 Changelog
 
+1.12.2-1.0.2.1
+* Bug Fix - Video Settings now scales correctly after changing the main GUI scale settings
+
 1.12.2-1.0.2.0
 * Added compatibility with Optifine
 
@@ -16,13 +19,13 @@ Changelog
 * Prep for initial release.
 
 1.12.2-0.0.3.3
-* Fixed bug. Incorrect import statement. (scala Array instead of java.util)
+* Bug Fix - Incorrect import statement. (scala Array instead of java.util)
 
 1.12.2-0.0.3.2
 * Changed RenderTooltipEvent.PostText method priority to catch Apple Skin tooltip info
 
 1.12.2-0.0.3.1
-* Fixed bug. New GUI entry screen now goes back when "Done" is pressed and the gui name field is blank
+* Bug Fix - New GUI entry screen now goes back when "Done" is pressed and the gui name field is blank
 
 1.12.2-0.0.3.0
 * Changed select-value screens to list GUI names in order from most recent to least

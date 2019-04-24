@@ -3,6 +3,7 @@ package spazley.scalingguis.gui.guiconfig;
 import com.google.gson.JsonObject;
 import spazley.scalingguis.ScalingGUIs;
 import spazley.scalingguis.config.CustomScales;
+import spazley.scalingguis.handlers.ClientEventHandler;
 import spazley.scalingguis.handlers.ConfigHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -145,6 +146,10 @@ public class GuiConfigSG extends GuiConfig {
             String iceName = ice.getName();
             switch (iceName) {
                 case "guiScale":
+                    if (customScales.guiScale != Integer.valueOf(ice.get().toString())) {
+                        ClientEventHandler.setCancelGuiVideoSettings(false);
+                        ScalingGUIs.logger.info("No cancelation");
+                    }
                     customScales.guiScale = Integer.valueOf(ice.get().toString());
                     break;
                 case "hudScale":
