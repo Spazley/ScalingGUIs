@@ -1,5 +1,8 @@
 Changelog
 
+1.12.2-1.?.?.?
+* Bug Fix - Button click no longer playing twice on Gui Scales when Optifine is installed
+
 1.12.2-1.0.2.1
 * Bug Fix - Video Settings now scales correctly after changing the main GUI scale settings
 
