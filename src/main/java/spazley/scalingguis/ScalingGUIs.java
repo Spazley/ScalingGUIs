@@ -27,7 +27,7 @@ public class ScalingGUIs
     {
         logger = event.getModLog();
         //if (FMLClientHandler.instance().hasOptifine()) {
-            logger.error("Optifine present. Disabling ScalingGUIs.");
+            //logger.error("Optifine present. Disabling ScalingGUIs.");
         //} else {
 
             new ClientEventHandler();
