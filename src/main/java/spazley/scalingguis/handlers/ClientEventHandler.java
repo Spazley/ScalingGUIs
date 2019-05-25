@@ -2,6 +2,7 @@ package spazley.scalingguis.handlers;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
@@ -30,6 +31,7 @@ public class ClientEventHandler {
     private String lastGui = null;
     private int lastScale = -1;
 
+    private boolean renderGuiTakenOver = false;
     private boolean ingameRenderTakenOver = false;
 
     private static boolean cancelGuiVideoSettings = false; //Prevent GuiVideoSettings from changing scale after opening GuiConfigSG
@@ -42,7 +44,11 @@ public class ClientEventHandler {
         if (e.getGui() != null) {
             try{
                 String name = e.getGui().getClass().getName();
-                if ((name.equals(lastGui) && Minecraft.getMinecraft().gameSettings.guiScale == lastScale)) {
+                /*if ((name.equals(lastGui) && Minecraft.getMinecraft().gameSettings.guiScale == lastScale)) {
+                    return;
+                }*/
+                if (renderGuiTakenOver) {
+                    renderGuiTakenOver = false;
                     return;
                 }
                 if (ConfigHandler.inBlacklist(name)) {
@@ -68,6 +74,31 @@ public class ClientEventHandler {
 
                 lastGui = name;
 
+                if (ConfigHandler.inDynamics(name) && e.getGui() instanceof GuiContainer) {
+                    renderGuiTakenOver = true;
+                    int xSize = ((GuiContainer)e.getGui()).getXSize();
+                    int ySize = ((GuiContainer)e.getGui()).getYSize();
+                    Minecraft.getMinecraft().gameSettings.guiScale = ConfigHandler.customScales.guiScale;
+                    int i;
+                    int w = 0;
+                    int h = 0;
+                    for (i = (new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor()); i >= 0; i--) {
+                        Minecraft.getMinecraft().gameSettings.guiScale = i;
+                        ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+                        w = scaledResolution.getScaledWidth();
+                        h = scaledResolution.getScaledHeight();
+                        if (w > xSize && h > ySize) {
+                            break;
+                        }
+                    }
+                    lastScale = i;
+
+                    e.setCanceled(true);
+                    e.getGui().setWorldAndResolution(Minecraft.getMinecraft(), w, h);
+                    //renderGuiTakenOver = false;
+                    return;
+                }
+
                 int newScale = ConfigHandler.getGuiScale(e.getGui());
                 if (Minecraft.getMinecraft().gameSettings.guiScale == newScale) {
                     return;
@@ -75,17 +106,18 @@ public class ClientEventHandler {
                 lastScale = newScale;
                 //ScalingGUIs.logger.info("GUI is NOT null. Setting scale to " + newScale + ".");
 
-
+                renderGuiTakenOver = true;
                 Minecraft.getMinecraft().gameSettings.guiScale = newScale;
                 ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
                 int w = scaledResolution.getScaledWidth();
                 int h = scaledResolution.getScaledHeight();
                 e.setCanceled(true);
                 e.getGui().setWorldAndResolution(Minecraft.getMinecraft(), w, h);
-
+                //renderGuiTakenOver = false;
 
             } catch(Exception ex) {
                 //ScalingGUIs.logger.warn("Error in onGuiOpen (if): ", ex);
+                renderGuiTakenOver = false;
             }
         } else {
             try{
@@ -141,12 +173,11 @@ public class ClientEventHandler {
     //May need to play around with priority if other mods render things with the RenderTooltipEvent.Pre event
     @SubscribeEvent(priority=EventPriority.LOWEST)
     public void onPreRenderTooltip(RenderTooltipEvent.Pre e) {
-        e.getListenerList();
-
         int newScale = clampScale(ConfigHandler.getTooltipScale());
         //ScalingGUIs.logger.info("Setting TOOLTIP scale to " + newScale + ".");
         GlStateManager.pushMatrix();
         ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+        float sF = (float)res.getScaleFactor();
         float f = newScale/(float)res.getScaleFactor();
         GlStateManager.scale(f, f, f);
         e.setX((int)(e.getX()/f));

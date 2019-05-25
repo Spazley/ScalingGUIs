@@ -3,6 +3,7 @@ scalingguis.config.main.title=ScalingGUIs Config
 scalingguis.config.individual.title=Custom Individual GUI Scales
 scalingguis.config.group.title=Custom Group GUI Scales
 scalingguis.config.blacklist.title=GUI Class Blacklist
+scalingguis.config.dynamics.title=Dynamic Scales Whitelist
 scalingguis.config.general.title=General Settings
 scalingguis.config.individual.add.title=New Individual Entry
 scalingguis.config.group.add.title=New Group Entry
@@ -74,6 +75,9 @@ scalingguis.config.group.delete.title.tooltip=Remove a group entry from the list
 
 # Config Entry Tooltips ----- Blacklist
 scalingguis.config.blacklist.title.tooltip=GUI class names blacklisted from scale settings.  Default values ensure screens consisting of multiple GUIs scale to the initial GUI's scale.
+
+# Config Entry Tooltips ----- Dynamics
+scalingguis.config.dynamics.whitelist.tooltip=Dynamic scaling of whitelisted container GUIs (extends "GuiContainer") based on GUI dimensions.
 
 # Config Entry Tooltips ----- General
 scalingguis.config.general.title.tooltip=General ScalingGUIs settings.

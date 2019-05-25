@@ -15,6 +15,7 @@ public class CustomScales {
     public Set<String> loggedGuiClassNames = new LinkedHashSet<>();
     //public List<String> loggedGuiClassNames = new ArrayList<>();
     public SortedSet<String> blacklistGuiClassNames = new TreeSet<>();// blacklistDefault();
+    public SortedSet<String> dynamicGuiScales = new TreeSet<>();
 
 
     public void checkCustomEntries()

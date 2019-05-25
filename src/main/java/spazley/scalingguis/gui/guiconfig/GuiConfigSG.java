@@ -1,6 +1,7 @@
 package spazley.scalingguis.gui.guiconfig;
 
 import com.google.gson.JsonObject;
+import net.minecraftforge.common.config.Config;
 import spazley.scalingguis.ScalingGUIs;
 import spazley.scalingguis.config.CustomScales;
 import spazley.scalingguis.handlers.ClientEventHandler;
@@ -27,6 +28,7 @@ public class GuiConfigSG extends GuiConfig {
     protected static final String INDIVIDUAL_ID = "ScalingGUIsConfigIndividual";
     protected static final String GROUP_ID = "ScalingGUIsConfigGroup";
     protected static final String BLACKLIST_ID = "ScalingGUIsConfigBlacklist";
+    protected static final String DYNAMICS_ID = "ScalingGUIsConfigDynamics";
     protected static final String GENERAL_ID = "ScalingGUIsConfigGeneral";
 
     //Element IDs
@@ -40,6 +42,7 @@ public class GuiConfigSG extends GuiConfig {
     private static final String INDIVIDUAL_TITLE = "scalingguis.config.individual.title";
     private static final String GROUP_TITLE = "scalingguis.config.group.title";
     private static final String BLACKLIST_TITLE = "scalingguis.config.blacklist.title";
+    private static final String DYNAMICS_TITLE = "scalingguis.config.dynamics.title";
     private static final String GENERAL_TITLE = "scalingguis.config.general.title";
     private static final String NEW_INDIVIDUAL_TITLE = "scalingguis.config.individual.add.title";
     private static final String NEW_GROUP_TITLE = "scalingguis.config.group.add.title";
@@ -58,6 +61,7 @@ public class GuiConfigSG extends GuiConfig {
         List<IConfigElement> individualElements = new ArrayList<>();
         List<IConfigElement> groupElements = new ArrayList<>();
         List<IConfigElement> blacklistElements = new ArrayList<>();
+        List<IConfigElement> dynamicsElements = new ArrayList<>();
         List<IConfigElement> generalElements = new ArrayList<>();
 
         //Main Config Menu Elements
@@ -78,6 +82,9 @@ public class GuiConfigSG extends GuiConfig {
         //Blacklist Config Menu Elements
         blacklistElements.addAll(ConfigHandler.getBlacklistElementsList());
 
+        //Dynamics Config Menu Elements
+        dynamicsElements.addAll(ConfigHandler.getDynamicsList());
+
         //General Config Menu Elements
         generalElements.addAll((new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL))).getChildElements());
 
@@ -85,6 +92,7 @@ public class GuiConfigSG extends GuiConfig {
         //Main Config Menu Category Elements
         mainElements.add(new DummyConfigElement.DummyCategoryElement(INDIVIDUAL_ID, INDIVIDUAL_TITLE, individualElements));
         mainElements.add(new DummyConfigElement.DummyCategoryElement(GROUP_ID, GROUP_TITLE, groupElements));
+        mainElements.add(new DummyConfigElement.DummyCategoryElement(DYNAMICS_ID, DYNAMICS_TITLE, dynamicsElements));
         mainElements.add(new DummyConfigElement.DummyCategoryElement(BLACKLIST_ID, BLACKLIST_TITLE, blacklistElements));
         mainElements.add(new DummyConfigElement.DummyCategoryElement(GENERAL_ID, GENERAL_TITLE, generalElements));
 
@@ -164,6 +172,9 @@ public class GuiConfigSG extends GuiConfig {
                 case GROUP_ID:
                     saveGroups(ice);
                     break;
+                case DYNAMICS_ID:
+                    saveDynamics(ice);
+                    break;
                 case BLACKLIST_ID:
                     saveBlacklist(ice);
                     break;
@@ -217,6 +228,15 @@ public class GuiConfigSG extends GuiConfig {
         }
 
         customScales.customGroupGuiScales = groups;
+    }
+
+    private void saveDynamics(IConfigElement iConfigElementIn)
+    {
+        for (IConfigElement ice : iConfigElementIn.getChildElements()) {
+            if ("dynamics".equals(ice.getName())) {
+                customScales.dynamicGuiScales = new TreeSet<String>(Arrays.asList((String[])ice.getList()));
+            }
+        }
     }
 
     private void saveBlacklist(IConfigElement iConfigElementIn)

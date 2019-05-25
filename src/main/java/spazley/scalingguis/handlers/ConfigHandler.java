@@ -25,6 +25,7 @@ public class ConfigHandler
     private static List<String> individualGuiClassNames;
     private static List<String> groupGuiClassNames;
     private static List<String> blacklistGuiClassNames;
+    private static List<String> dynamicGuiClassNames;
 
     public static boolean logGuiClassNames = false;
     public static boolean persistentLog = true;
@@ -76,6 +77,7 @@ public class ConfigHandler
         individualGuiClassNames = JsonHelper.getKeyList(customScales.customIndividualGuiScales);
         groupGuiClassNames = JsonHelper.getKeyList(customScales.customGroupGuiScales);
         blacklistGuiClassNames = new ArrayList<>(customScales.blacklistGuiClassNames);
+        dynamicGuiClassNames = new ArrayList<>(customScales.dynamicGuiScales);
     }
 
     public static void saveConfigs()
@@ -116,6 +118,11 @@ public class ConfigHandler
     public static boolean inBlacklist(String className)
     {
         return blacklistGuiClassNames.contains(className);
+    }
+
+    public static boolean inDynamics(String className)
+    {
+        return dynamicGuiClassNames.contains(className);
     }
 
     public static int getIndividualScale(String className)
@@ -231,6 +238,17 @@ public class ConfigHandler
         return list;
     }
 
+    public static List<IConfigElement> getDynamicsList()
+    {
+        List<IConfigElement> list = new ArrayList<>();
+
+        Property prop = new Property("dynamics", dynamicGuiClassNames.toArray(new String[0]), Property.Type.STRING, "scalingguis.config.dynamics.title");
+
+        list.add(new ConfigElement(prop));
+
+        return list;
+    }
+
     public static Map<Object, String> getUnusedLoggedClassNames()
     {
         List<String> list = new ArrayList<>(customScales.loggedGuiClassNames);
@@ -238,6 +256,7 @@ public class ConfigHandler
         list.removeAll(individualGuiClassNames);
         list.removeAll(groupGuiClassNames);
         list.removeAll(blacklistGuiClassNames);
+        list.removeAll(dynamicGuiClassNames);
 
         if (sortLoggedAlphabetically) {
             Collections.sort(list);

@@ -1,6 +1,7 @@
 Changelog
 
-1.12.2-1.?.?.?
+1.12.2-1.0.3.0
+* Added dynamic scaling for whitelisted GuiContainers
 * Bug Fix - Button click no longer playing twice on Gui Scales when Optifine is installed
 
 1.12.2-1.0.2.1
